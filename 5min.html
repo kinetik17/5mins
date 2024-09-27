@@ -101,7 +101,7 @@
 
         .time-bar-container {
             width: 500px;
-            height: 20px !important; /* Explicit height with important flag */
+            height: 20px; /* Explicit height */
             background-color: #333;
             border-radius: 10px;
             margin: 10px auto; /* Reduced margin */
@@ -111,7 +111,7 @@
 
         .time-bar {
             width: 0%;
-            height: 100% !important; /* Ensure it fills the container with important flag */
+            height: 20px; /* Explicit height */
             background-color: white;
             transition: width 0.1s linear;
         }
@@ -127,6 +127,9 @@
                 line-height: 120px;
                 width: 400px;
             }
+            .time-bar {
+                height: 20px; /* Explicit height for smaller screens */
+            }
         }
 
         @media (max-width: 480px) {
@@ -140,6 +143,9 @@
                 line-height: 100px;
                 width: 300px;
             }
+            .time-bar {
+                height: 20px; /* Explicit height for smaller screens */
+            }
         }
     </style>
 </head>
@@ -147,8 +153,8 @@
     <div class="container">
         <div class="timer-container">
             <div class="timer" id="timer">00:00:00</div>
-            <div class="time-bar-container" id="timeBarContainer" style="height: 20px !important;">
-                <div class="time-bar" id="timeBar" style="height: 100% !important;"></div>
+            <div class="time-bar-container" id="timeBarContainer">
+                <div class="time-bar" id="timeBar"></div>
             </div>
             <div>
                 <button class="button" id="button-1">Start</button>
