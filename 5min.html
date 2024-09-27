@@ -33,6 +33,7 @@
         .container {
             text-align: center;
             width: 100%;
+            max-width: 768px;
         }
 
         .timer {
@@ -88,6 +89,8 @@
             margin: 10px auto;
             overflow: hidden;
             cursor: pointer;
+            display: flex;
+            align-items: center;
         }
 
         .time-bar {
@@ -95,6 +98,28 @@
             height: 100%;
             background-color: white;
             transition: width 0.1s linear;
+        }
+
+        @media (max-width: 768px) {
+            .timer {
+                font-size: 80px;
+                height: 120px;
+                line-height: 120px;
+            }
+            .time-bar-container {
+                height: 15px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .timer {
+                font-size: 60px;
+                height: 100px;
+                line-height: 100px;
+            }
+            .time-bar-container {
+                height: 10px;
+            }
         }
     </style>
 </head>
