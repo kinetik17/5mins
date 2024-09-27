@@ -99,20 +99,16 @@
         #button-2 { width: 104px; }
         #button-3 { width: 96px; }
 
-        .time-bar-wrapper {
-            border: 2px solid white;
-            border-radius: 10px;
-            padding: 5px;
-            margin: 10px auto;
-        }
-
         .time-bar-container {
             width: 500px;
             height: 20px; /* Explicit height */
             background-color: #333;
             border-radius: 10px;
+            margin: 10px auto; /* Reduced margin */
             overflow: hidden;
             cursor: pointer;
+            display: flex;
+            align-items: center;
         }
 
         .time-bar {
@@ -133,9 +129,6 @@
                 line-height: 120px;
                 width: 400px;
             }
-            .time-bar-wrapper {
-                width: 400px;
-            }
         }
 
         @media (max-width: 480px) {
@@ -149,9 +142,6 @@
                 line-height: 100px;
                 width: 300px;
             }
-            .time-bar-wrapper {
-                width: 300px;
-            }
         }
     </style>
 </head>
@@ -159,10 +149,8 @@
     <div class="container">
         <div class="timer-container">
             <div class="timer" id="timer">00:00:00</div>
-            <div class="time-bar-wrapper">
-                <div class="time-bar-container" id="timeBarContainer">
-                    <div class="time-bar" id="timeBar"></div>
-                </div>
+            <div class="time-bar-container" id="timeBarContainer">
+                <div class="time-bar" id="timeBar"></div>
             </div>
             <div>
                 <button class="button" id="button-1">Start</button>
