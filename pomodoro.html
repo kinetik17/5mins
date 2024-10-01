@@ -45,7 +45,9 @@
             cursor: pointer;
             height: 40px;
             padding: 10px 20px;
-            display: inline-block;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
             border: 2px solid white;
             border-radius: 100px;
             margin: 5px;
@@ -65,21 +67,13 @@
             font-family: 'Space Grotesk', sans-serif;
             font-size: 128px;
             font-variant-numeric: tabular-nums;
-            font-weight: normal;
+            font-weight: 600;
             height: 160px;
-            letter-spacing: -2px;
             line-height: 160px;
             width: 100%;
             color: white;
             background-color: black;
             margin: 10px 0;
-            text-shadow: 
-                -1px -1px 0 white,
-                1px -1px 0 white,
-                -1px 1px 0 white,
-                1px 1px 0 white,
-                2px 2px 0 white;
-            -webkit-text-stroke: 2px white;
         }
 
         .time-bar-container {
@@ -104,13 +98,15 @@
 
         .control-buttons {
             margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         #settingsButton {
             padding: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            width: 40px;
+            height: 40px;
         }
 
         .settings-modal {
@@ -207,7 +203,7 @@
             <button class="button" data-mode="shortBreak">Short Break</button>
             <button class="button" data-mode="longBreak">Long Break</button>
         </div>
-        <div class="timer" id="timer">25:00:00</div>
+        <div class="timer" id="timer">25:00.00</div>
         <div class="time-bar-container" id="timeBarContainer">
             <div class="time-bar" id="timeBar"></div>
         </div>
@@ -265,7 +261,7 @@
         const settingsForm = document.getElementById('settingsForm');
         const alarmSound = document.getElementById('alarmSound');
 
-        let time = 25 * 60 * 100;
+        let time = 25 * 60 * 100; // 25 minutes in centiseconds
         let initialTime = time;
         let isActive = false;
         let interval;
@@ -282,7 +278,7 @@
             const minutes = Math.floor(time / 6000);
             const seconds = Math.floor((time % 6000) / 100);
             const centiseconds = time % 100;
-            timer.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}:${centiseconds.toString().padStart(2, '0')}`;
+            timer.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}.${centiseconds.toString().padStart(2, '0')}`;
             updateProgress();
         }
 
@@ -295,10 +291,10 @@
             isActive = !isActive;
             if (isActive) {
                 startButton.textContent = 'Pause';
+                const startTime = Date.now() - (initialTime - time) * 10;
                 interval = setInterval(() => {
-                    time--;
-                    updateTimer();
-                    if (time === 0) {
+                    time = Math.max(0, Math.round((initialTime - (Date.now() - startTime) / 10)));
+                    if (time <= 0) {
                         clearInterval(interval);
                         isActive = false;
                         startButton.textContent = 'Start';
@@ -306,6 +302,7 @@
                             alarmSound.play();
                         }
                     }
+                    updateTimer();
                 }, 10);
             } else {
                 clearInterval(interval);
@@ -324,7 +321,7 @@
         }
 
         function setTime(mode) {
-            time = timeSettings[mode] * 60 * 100;
+            time = timeSettings[mode] * 60 * 100; // Convert minutes to centiseconds
             initialTime = time;
             updateProgress();
         }
@@ -350,22 +347,9 @@
 
             updateTimer();
 
-            if (interval) {
+            if (isActive) {
                 clearInterval(interval);
-                if (isActive) {
-                    interval = setInterval(() => {
-                        time--;
-                        updateTimer();
-                        if (time === 0) {
-                            clearInterval(interval);
-                            isActive = false;
-                            startButton.textContent = 'Start';
-                            if (isSoundOn) {
-                                alarmSound.play();
-                            }
-                        }
-                    }, 10);
-                }
+                toggleTimer();
             }
         }
 
