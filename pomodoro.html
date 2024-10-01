@@ -80,7 +80,7 @@
     }
 
     .time-bar-container {
-        width: 100%;
+        width: 60%;
         height: 20px;
         background-color: #333;
         border-radius: 10px;
@@ -206,6 +206,7 @@
         }
         .time-bar-container {
             height: 10px;
+            width: 80%;
         }
         .mode-button, .control-button {
             padding: 8px 16px;
@@ -267,7 +268,158 @@
 <audio id="alarmSound" src="https://files.catbox.moe/6mqp49.mp3" preload="auto"></audio>
 
 <script>
-    // ... (JavaScript code remains unchanged)
+    const timer = document.getElementById('timer');
+    const timeBar = document.getElementById('timeBar');
+    const timeBarContainer = document.getElementById('timeBarContainer');
+    const startButton = document.getElementById('startButton');
+    const resetButton = document.getElementById('resetButton');
+    const settingsButton = document.getElementById('settingsButton');
+    const modeButtons = document.querySelectorAll('.mode-button');
+    const settingsModal = document.getElementById('settingsModal');
+    const closeButton = document.querySelector('.close');
+    const settingsForm = document.getElementById('settingsForm');
+    const alarmSound = document.getElementById('alarmSound');
+
+    let time = 25 * 60 * 100;
+    let initialTime = time;
+    let isActive = false;
+    let interval;
+    let currentMode = 'pomodoro';
+    let isSoundOn = true;
+
+    const timeSettings = {
+        pomodoro: 25,
+        shortBreak: 5,
+        longBreak: 15
+    };
+
+    function updateTimer() {
+        const minutes = Math.floor(time / 6000);
+        const seconds = Math.floor((time % 6000) / 100);
+        const centiseconds = time % 100;
+        timer.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}:${centiseconds.toString().padStart(2, '0')}`;
+        updateProgress();
+    }
+
+    function updateProgress() {
+        const progressPercentage = ((initialTime - time) / initialTime) * 100;
+        timeBar.style.width = `${progressPercentage}%`;
+    }
+
+    function toggleTimer() {
+        isActive = !isActive;
+        if (isActive) {
+            startButton.textContent = 'Pause';
+            interval = setInterval(() => {
+                time--;
+                updateTimer();
+                if (time === 0) {
+                    clearInterval(interval);
+                    isActive = false;
+                    startButton.textContent = 'Start';
+                    if (isSoundOn) {
+                        alarmSound.play();
+                    }
+                }
+            }, 10);
+        } else {
+            clearInterval(interval);
+            startButton.textContent = 'Start';
+        }
+    }
+
+    function resetTimer() {
+        clearInterval(interval);
+        isActive = false;
+        setTime(currentMode);
+        updateTimer();
+        startButton.textContent = 'Start';
+        alarmSound.pause();
+        alarmSound.currentTime = 0;
+    }
+
+    function setTime(mode) {
+        time = timeSettings[mode] * 60 * 100;
+        initialTime = time;
+        updateProgress();
+    }
+
+    function changeMode(mode) {
+        currentMode = mode;
+        clearInterval(interval);
+        isActive = false;
+        startButton.textContent = 'Start';
+        
+        modeButtons.forEach(btn => btn.classList.remove('active'));
+        event.target.classList.add('active');
+
+        setTime(mode);
+        updateTimer();
+    }
+
+    function skipToTime(event) {
+        const rect = timeBarContainer.getBoundingClientRect();
+        const x = event.clientX - rect.left;
+        const clickedProgress = x / rect.width;
+        time = Math.floor((1 - clickedProgress) * initialTime);
+
+        updateTimer();
+
+        if (interval) {
+            clearInterval(interval);
+            if (isActive) {
+                interval = setInterval(() => {
+                    time--;
+                    updateTimer();
+                    if (time === 0) {
+                        clearInterval(interval);
+                        isActive = false;
+                        startButton.textContent = 'Start';
+                        if (isSoundOn) {
+                            alarmSound.play();
+                        }
+                    }
+                }, 10);
+            }
+        }
+    }
+
+    startButton.addEventListener('click', toggleTimer);
+    resetButton.addEventListener('click', resetTimer);
+    modeButtons.forEach(btn => {
+        btn.addEventListener('click', (event) => changeMode(event.target.dataset.mode));
+    });
+
+    settingsButton.addEventListener('click', () => {
+        settingsModal.style.display = 'block';
+        document.getElementById('pomodoroTime').value = timeSettings.pomodoro;
+        document.getElementById('shortBreakTime').value = timeSettings.shortBreak;
+        document.getElementById('longBreakTime').value = timeSettings.longBreak;
+        document.getElementById('soundToggle').checked = isSoundOn;
+    });
+
+    closeButton.addEventListener('click', () => {
+        settingsModal.style.display = 'none';
+    });
+
+    window.addEventListener('click', (event) => {
+        if (event.target == settingsModal) {
+            settingsModal.style.display = 'none';
+        }
+    });
+
+    settingsForm.addEventListener('change', () => {
+        timeSettings.pomodoro = parseInt(document.getElementById('pomodoroTime').value);
+        timeSettings.shortBreak = parseInt(document.getElementById('shortBreakTime').value);
+        timeSettings.longBreak = parseInt(document.getElementById('longBreakTime').value);
+        isSoundOn = document.getElementById('soundToggle').checked;
+        setTime(currentMode);
+        updateTimer();
+    });
+
+    timeBarContainer.addEventListener('click', skipToTime);
+
+    updateTimer();
 </script>
 </body>
 </html>
