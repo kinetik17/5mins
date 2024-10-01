@@ -26,23 +26,29 @@
             align-items: center;
             justify-content: center;
             height: 100vh;
+            width: 100vw;
             margin: 0;
+            overflow: hidden;
         }
 
         .container {
             text-align: center;
             width: 100%;
-            max-width: 768px;
+            max-width: 100%;
+            padding: 20px;
         }
 
         .mode-buttons {
             margin-bottom: 2rem;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
         }
 
         .mode-button {
             cursor: pointer;
             height: 40px;
-            padding: 10px 30px;
+            padding: 10px 20px;
             display: inline-block;
             border: 2px solid white;
             border-radius: 100px;
@@ -51,6 +57,7 @@
             color: white;
             transition: background-color 0.3s, color 0.3s;
             font-weight: bold;
+            font-size: 14px;
         }
 
         .mode-button:hover, .mode-button.active {
@@ -60,12 +67,12 @@
 
         .timer {
             font-family: 'Space Grotesk', sans-serif;
-            font-size: 128px;
+            font-size: 15vw;
             font-variant-numeric: tabular-nums;
             font-weight: normal;
-            height: 160px;
+            height: 1.25em;
             letter-spacing: -2px;
-            line-height: 160px;
+            line-height: 1.25em;
             width: 100%;
             color: white;
             background-color: black;
@@ -81,7 +88,6 @@
 
         .time-bar-container {
             width: 100%;
-            max-width: 500px;
             height: 20px;
             background-color: #333;
             border-radius: 10px;
@@ -104,23 +110,25 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            flex-wrap: wrap;
         }
 
         .control-button {
             cursor: pointer;
             height: 40px;
-            padding: 10px 30px;
+            padding: 10px 20px;
             display: inline-flex;
             align-items: center;
             justify-content: center;
             border: 2px solid white;
             border-radius: 100px;
-            margin: 0 6px;
+            margin: 6px;
             background-color: black;
             color: white;
             transition: background-color 0.3s, color 0.3s;
             font-weight: bold;
-            min-width: 100px;
+            min-width: 80px;
+            font-size: 14px;
         }
 
         .control-button:hover {
@@ -135,7 +143,7 @@
 
         #settingsButton {
             padding: 10px;
-            min-width: 60px;
+            min-width: 40px;
         }
 
         .settings-modal {
@@ -155,7 +163,8 @@
             padding: 20px;
             border: 1px solid white;
             border-radius: 15px;
-            width: 300px;
+            width: 90%;
+            max-width: 300px;
         }
 
         .settings-header {
@@ -198,25 +207,16 @@
             margin-left: 10px;
         }
 
-        @media (max-width: 768px) {
-            .timer {
-                font-size: 80px;
-                height: 120px;
-                line-height: 120px;
-            }
-            .time-bar-container {
-                height: 15px;
-            }
-        }
-
         @media (max-width: 480px) {
             .timer {
-                font-size: 60px;
-                height: 100px;
-                line-height: 100px;
+                font-size: 18vw;
             }
             .time-bar-container {
                 height: 10px;
+            }
+            .mode-button, .control-button {
+                padding: 8px 16px;
+                font-size: 12px;
             }
         }
     </style>
